@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .test-button { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>EduVerse Agent API Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Study Planner Agent</h2>
+        <button class="test-button" onclick="testStudyPlanner()">Test Study Planner</button>
+        <div id="studyPlannerResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Resource Curator Agent</h2>
+        <button class="test-button" onclick="testResourceCurator()">Test Resource Curator</button>
+        <div id="resourceCuratorResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Exam Coach Agent</h2>
+        <button class="test-button" onclick="testExamCoach()">Test Exam Coach</button>
+        <div id="examCoachResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Syllabus Analyzer Agent</h2>
+        <button class="test-button" onclick="testSyllabusAnalyzer()">Test Syllabus Analyzer</button>
+        <div id="syllabusAnalyzerResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        async function makeRequest(url, data) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                return { error: error.message };
+            }
+        }
+        
+        async function testStudyPlanner() {
+            const resultDiv = document.getElementById('studyPlannerResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing Study Planner...';
+            resultDiv.className = 'result';
+            
+            const result = await makeRequest(`${API_BASE}/agents/planner/test-user`, {
+                subjects: ['Mathematics'],
+                days_ahead: 7,
+                daily_hours: 2
+            });
+            
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+            resultDiv.className = `result ${result.success ? 'success' : 'error'}`;
+        }
+        
+        async function testResourceCurator() {
+            const resultDiv = document.getElementById('resourceCuratorResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing Resource Curator...';
+            resultDiv.className = 'result';
+            
+            const result = await makeRequest(`${API_BASE}/agents/curator/test-user`, {
+                topic: 'JavaScript programming',
+                subject: 'Computer Science',
+                resource_types: ['video', 'article']
+            });
+            
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+            resultDiv.className = `result ${result.success ? 'success' : 'error'}`;
+        }
+        
+        async function testExamCoach() {
+            const resultDiv = document.getElementById('examCoachResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing Exam Coach...';
+            resultDiv.className = 'result';
+            
+            const result = await makeRequest(`${API_BASE}/agents/exam/test-user`, {
+                topic: 'JavaScript basics',
+                subject: 'Programming',
+                question_count: 3,
+                difficulty: 'intermediate',
+                question_types: ['multiple_choice']
+            });
+            
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+            resultDiv.className = `result ${result.success ? 'success' : 'error'}`;
+        }
+        
+        async function testSyllabusAnalyzer() {
+            const resultDiv = document.getElementById('syllabusAnalyzerResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Testing Syllabus Analyzer...';
+            resultDiv.className = 'result';
+            
+            const result = await makeRequest(`${API_BASE}/agents/syllabus/analyze-text/test-user`, {
+                syllabus_content: 'Introduction to Python: Variables, Functions, Loops, Classes. Object-Oriented Programming. Data Structures.',
+                subject: 'Computer Science',
+                course_name: 'Python Programming',
+                difficulty_level: 'intermediate'
+            });
+            
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+            resultDiv.className = `result ${result.success ? 'success' : 'error'}`;
+        }
+    </script>
+</body>
+</html> 
