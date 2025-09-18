@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://eduverse-production.up.railway.app/';
+const API_BASE_URL = 'https://edu-verse-q704.onrender.com';
 
 // Create axios instance
 const api = axios.create({
